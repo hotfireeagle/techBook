@@ -72,5 +72,3 @@ function isIteratorable(obj) {
 ```
 
 
-
-### 6.为什么babel兼容不了Symbol?
