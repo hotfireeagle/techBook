@@ -53,5 +53,54 @@ function createElement(type, config, children) {
 }
 ```
 
+**createElement方法接下来做的功能就是处理children。**见代码如下所示：
 
+```javascript
+function createElement(type, config, children) {
+  // ...... 省略来一些代码
+  const childrenLength = arguments.length - 2 // 利用老语法arguments获取子节点的数量
+  if (childrenLength === 1) {
+    props.children = children
+  } else if (childrenLength > 1) {
+    const childArray = Array(childrenLength)
+    for (let i = 0; i < childrenLength; i++) {
+      childArray[i] = arguments[i + 2]
+    }
+    props.children = childArray
+  }
+}
+```
+
+**createElement方法在处理完了children之后，接下来重点要做的就是处理defauleProps**。这里先介绍一下，那就是defaultProps存储在哪？defaultProps是属于类的静态属性，也就是说是在type上面。关键代码如下所示：
+
+```javascript
+function createElement(type, config, children) {
+  // ...... 省略了一些代码
+  if (type && type.defaultProps) {
+    const defaultProps = type.defaultProps
+    for (propName in defaultProps) {
+      if (props[propName] === undefined) {
+        props[propName] = defaultProps[propName]
+      }
+    }
+  }
+}
+```
+
+最终createElement使用ReactElement方法构造出了一个对象，并且对其进行返回，如下所示：
+
+```javascript
+function createElement(type, config, children) {
+  // ...... 省略来一些代码
+  return ReactElement(
+  	type,
+    key,
+    ref,
+    self,
+    source,
+    ReactCurrentOwner.current,
+    props,
+  )
+}
+```
 
