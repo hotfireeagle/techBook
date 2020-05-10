@@ -104,3 +104,17 @@ function createElement(type, config, children) {
 }
 ```
 
+### 4.isValidElement
+
+```javascript
+function isValidElement(object) {
+  return (
+  	typeof object === 'object' &&
+    	object !== null &&
+    	object.$$typeof === REACT_ELEMENT_TYPE
+  );
+}
+```
+
+不愧是ducktype，如果是使用new的形式来创建ReactElement的话，还能通过instanceOf来稍微缓解一下这个情况。
+
