@@ -104,7 +104,27 @@ function createElement(type, config, children) {
 }
 ```
 
-### 4.isValidElement
+### 4.ReactElement
+
+上面提到了，createElement最终调用了ReactElement方法，这里来看下ReactElement方法的定义：
+
+```javascript
+function createElement(type, key, ref, self, source, owner, props) {
+  const element = {
+    $$typeof: REACT_ELEMENT_TYPE,
+    type,
+    key,
+    ref,
+    props,
+    _owner: owner,
+  };
+  return element;
+}
+```
+
+从上面我们可以看出createElement方法最终返回了一个对象，这个对象上有一个$$typeof字段，其值为REACT_ELEMENT_TYPE，表示是一个ReactElement。
+
+### 5.isValidElement
 
 ```javascript
 function isValidElement(object) {
