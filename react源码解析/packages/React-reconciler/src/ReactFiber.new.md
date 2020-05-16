@@ -163,3 +163,12 @@ function resetWorkInProgress(workInProgress: Fiber, renderExpirationTime: Expira
 
 这个方法的源代码就不贴了，大致作用就是根据传入的参数type来创建指定的类型的Fiber。
 
+### 8.createFiberFromElement
+
+作用就是根据所传入的element参数来创建这个element对应类型的Fiber。实现上就是通过从element中取出type属性，然后再调用createFiberFromTypeAndProps方法。
+
+### 9.概述
+
+这个文件里面所定义的函数基本都是用来创建fiber的，其中很关键的就是createFiber方法和FiberNode方法，剩余的方法基本上都是根据指定的类型来创建对应的Fiber的。这里就不多做解释了，对于开发者所需要知道的是：对于一个Fiber来说，它有一个tag属性来表明自己属于何种Component（不限于Function Component和Class Component）。
+
+除此之外，Fiber还有一个alternate属性，这个属性的作用暂时还不是很清楚，但是貌似还是挺重要的。
