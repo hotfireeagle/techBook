@@ -68,3 +68,21 @@ function legacyRenderSubtreeIntoContainer(
 函数作用：开启整个react应用的渲染过程。如果是第一次挂载的话，那么直接渲染，不会被批处理进入调度；如果是更新的话，那么进入调度。
 
 参数解释：children，一般表示ReactElement或者js语言里面的简单值；container：即整个应用的挂载dom节点。
+
+### 3.render
+
+render方法我们使用的再多不过了，一般的使用方式都是传入传入两个参数，分别是第一个用来表示component，第二个用来表示dom。
+
+```typescript
+function render(component, ele, cb) {
+  // 省略若干代码
+  return legacyRenderSubtreeIntoContainer(
+  	null,
+    component,
+    ele,
+    false, // 客户端渲染
+    cb,
+  );
+}
+```
+
