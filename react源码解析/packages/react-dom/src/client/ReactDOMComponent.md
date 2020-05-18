@@ -92,3 +92,61 @@ function updateDOMProperties(domElement, updatePayload, wasCustomComponentTag) {
 
 我们写的jsx元素最终还是需要反馈到DOM元素上去的，因此创建DOM的过程也是被react所一手包办的，关于代码实现细节，这里就不多做解释了，总之就是返回了一个DOM节点。
 
+### 5.setInitalProperties
+
+作用：给dom元素设置一些默认值，这里只研究input元素。针对input的精简代码如下所示：
+
+```javascript
+ReactDOMInputInitWrapperState(domElement, rawProps);
+props = ReactDOMInputGetHostProps(domElement, rawProps);
+legacyTrapBubbledEvent(TOP_INVALID, domElement);
+```
+
+看下ReactDOMInputInitWrapperState对dom元素做了些什么操作：
+
+```typescript
+function ReactDOMInputInitWrapperState(ele, props) {
+  const defaultValue = props.defaultValue == null ? '' : props.defaultValue;
+  node._wrapperState = {
+    initialChecked:
+      props.checked != null ? props.checked : props.defaultChecked,
+    initialValue: getToStringValue(
+      props.value != null ? props.value : defaultValue,
+    ),
+    controlled: isControlled(props),
+  };
+}
+```
+
+可以看到，react给input元素添加了一些属性，并且挂载在其dom节点上面。不妨随便打开一个react应用，获取到一个input元素，可以发现在这个dom对象上面拥有一个_wraperState属性。其中有一个属性挺重要的，那就是controlled，判断一个节点是否是受控的，那么对于react来说，它是怎么判断一个dom节点是受控节点呢？如下所示：
+
+```typescript
+function isControlled(props) {
+  const usesChecked = props.type === 'checkbox' || props.type === 'radio';
+  return usesChecked ? props.checked != null : props.value != null;
+}
+```
+
+可以发现，如果一个元素是checkbox或者radio的话，那么只要props里面有checked，就说明它是一个受控组件；其余节点，只要props上面存在value，也认为它是一个受控节点。
+
+在回归正题，看看ReactDOMInputGetHostProps做了些什么：
+
+```typescript
+function getHostProps(element: Element, props: Object) {
+  const node = ((element: any): InputWithWrapperState);
+  const checked = props.checked;
+
+  const hostProps = Object.assign({}, props, {
+    defaultChecked: undefined,
+    defaultValue: undefined,
+    value: undefined,
+    checked: checked != null ? checked : node._wrapperState.initialChecked,
+  });
+
+  return hostProps;
+}
+```
+
+不懂，这里为啥不顾为啥要使用undefined来覆盖props.defaultChecked等几个属性。
+
+接下来看看legacyTrapBubbledEvent做了些啥：
