@@ -149,4 +149,34 @@ function getHostProps(element: Element, props: Object) {
 
 不懂，这里为啥不顾为啥要使用undefined来覆盖props.defaultChecked等几个属性。
 
-接下来看看legacyTrapBubbledEvent做了些啥：
+接下来看看legacyTrapBubbledEvent做了些啥（省略后的代码）：
+
+```javascript
+function legacyTrapBubbledEvent(topLevelType, element, listenerMap) {
+  const listener = addTrappedEventListener(element, topLevelType, PLUGIN_EVENT_SYSTEM, false);
+}
+```
+
+看看addTrappedEventListener做了些什么：
+
+```typescript
+function addTrappedEventListener(targetContainer, topLevelType, eventSystemFlags, capture) {
+  const rawEventName = getRawEventName(topLevelType); // 事件名称
+  const listener = createEventListenerWrapperWithPriority(
+  	targetContainer,
+    topLevelType,
+    eventSystemFlags,
+  );
+  const unscribe = capture ? 
+        addEventCaptureListener(targetContainer, rawEventName, listener)
+  			:
+  			addEventBubbleListener(targetContainer, rawEventName, listener);
+  return unscribe;
+}
+```
+
+关于这个事件是怎么合成的，后续出一篇关于react事件处理的文章，这里就不继续深入下去了。
+
+### 6.diffProperties
+
+作用：该方法用来计算两个代表property的props具有哪些不同。
